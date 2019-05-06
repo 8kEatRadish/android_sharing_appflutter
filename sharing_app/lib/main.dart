@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sharing_app/util/toast.dart';
 
 void main() => runApp(MyApp());
 
@@ -37,44 +38,92 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   static const platform = const MethodChannel("samples.flutter.io/battery");
-  String _batteryLevel = "Unknown battery level.";
+  bool isLoading = false;
+  List configs;
 
-  Future<Null> _getBatteryLevel() async {
-    String batteryLevel;
+  Future<Null> _getConfig() async {
+    List config;
     try {
       print("dart -_getBatteryLevel");
       //在通道上调用此方法
-      final int result = await platform.invokeMethod("getBatteryLevel");
-      batteryLevel = 'Battery level at $result % .';
+      final List result = await platform.invokeMethod("getConfig");
+      for(var i = 0; i < result.length; i++){
+        print("_getConfig" + result[i]);
+      }
+      config = result;
     } on PlatformException catch (e) {
-      batteryLevel = "Failed to get battery level: '${e.message}'.";
+      print("Failed to get application config : '${e.message}'.");
     }
     setState(() {
       print("dart -setState");
-      _batteryLevel = batteryLevel;
+      configs = config;
+      isLoading = true;
     });
+  }
+
+  Widget _listViewBuilder(BuildContext buildContext, int index){
+    var packageName = configs[index].split(" ")[0];
+    var applicationName = configs[index].split(" ")[1];
+    return GestureDetector(
+      onTap: (){
+        print(applicationName);
+        Toast.show(buildContext,"你点击了>>" + applicationName);
+      },
+      child: Column(
+        children: <Widget>[
+          Text(
+            applicationName,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue,
+            ),
+          ),
+          Text(
+            packageName,
+            textAlign: TextAlign.center,
+          ),
+          Divider()
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            RaisedButton(
-              onPressed: _getBatteryLevel,
-              child: new Text("Get bettery level"),
-            ),
-            Text(
-              '当前电量:$_batteryLevel',
-            ),
-          ],
+    if(isLoading){
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
         ),
-      ),
-    );
+        body: Center(
+          child: new ListView.builder(
+            padding: new EdgeInsets.symmetric(
+              horizontal: 20,
+            ),
+            itemCount: configs.length,
+            itemBuilder: _listViewBuilder,
+          ),
+        ),
+      );
+    }else{
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              RaisedButton(
+                onPressed: _getConfig,
+                child: new Text("获取已安装应用"),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 }
