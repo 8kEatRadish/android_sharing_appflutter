@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Share App'),
     );
   }
 }
@@ -67,7 +67,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return GestureDetector(
       onTap: (){
         print(applicationName);
-        Toast.show(buildContext,"你点击了>>" + applicationName);
+        Toast.show(buildContext,"share > " + applicationName);
+        try{
+          platform.invokeMethod("share",{"item" : index});
+        }on PlatformException catch (e){
+          print("Failed to shart apk : '${e.message}'.");
+        }
       },
       child: Column(
         children: <Widget>[

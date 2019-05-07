@@ -14,12 +14,12 @@ class Toast {
             color: Colors.grey,
             child: Padding(
               padding: const EdgeInsets.all(8),
-              child: Material(
-                child: Text(
+              child:Text(
                   message,
-                  style: TextStyle(),
-                ),
-              ),
+                  style: TextStyle(
+                    color: Colors.blue,
+                  ),
+                )
             ),
           ),
         ),
