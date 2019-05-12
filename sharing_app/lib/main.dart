@@ -38,8 +38,16 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   static const platform = const MethodChannel("samples.flutter.io/battery");
-  bool isLoading = false;
+  var isLoading = 0;
   List configs;
+
+  void _clickEvent(){
+    setState(() {
+      print("start getConfig");
+      isLoading = 1;
+    });
+    _getConfig();
+  }
 
   Future<Null> _getConfig() async {
     List config;
@@ -57,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       print("dart -setState");
       configs = config;
-      isLoading = true;
+      isLoading = 2;
     });
   }
 
@@ -97,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    if(isLoading){
+    if(isLoading == 2){
       return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
@@ -112,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       );
-    }else{
+    }else if(isLoading == 0){
       return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
@@ -122,11 +130,20 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               RaisedButton(
-                onPressed: _getConfig,
+                onPressed: _clickEvent,
                 child: new Text("获取已安装应用"),
               ),
             ],
           ),
+        ),
+      );
+    }else if(isLoading == 1){
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: Center(
+          child: new Text("loading..."),
         ),
       );
     }

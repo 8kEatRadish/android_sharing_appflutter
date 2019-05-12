@@ -40,12 +40,22 @@ android {
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs{
+        sharing_app{
+            keyAlias 'shw'
+            storeFile file ('../keystore/shw.jks')
+            keyPassword '123.456'
+            storePassword '123.456'
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
 
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.sharing_app
         }
     }
 }
