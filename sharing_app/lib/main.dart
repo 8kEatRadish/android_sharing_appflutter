@@ -52,7 +52,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<Null> _getConfig() async {
     List config;
     try {
-      print("dart -_getBatteryLevel");
       //在通道上调用此方法
       final List result = await platform.invokeMethod("getConfig");
       for(var i = 0; i < result.length; i++){
