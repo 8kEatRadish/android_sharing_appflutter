@@ -102,50 +102,44 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
   @override
   Widget build(BuildContext context) {
-    if(isLoading == 2){
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: Center(
-          child: new ListView.builder(
-            padding: new EdgeInsets.symmetric(
-              horizontal: 20,
-            ),
-            itemCount: configs.length,
-            itemBuilder: _listViewBuilder,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: _buildWidget(),
+    );
+  }
+
+  Widget _buildWidget() {
+    if (isLoading == 2) {
+      return Center(
+        child: new ListView.builder(
+          padding: new EdgeInsets.symmetric(
+            horizontal: 20,
           ),
+          itemCount: configs.length,
+          itemBuilder: _listViewBuilder,
         ),
       );
-    }else if(isLoading == 0){
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              RaisedButton(
-                onPressed: _clickEvent,
-                child: new Text("获取已安装应用"),
-              ),
-            ],
+    } else if (isLoading == 0) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            RaisedButton(
+            onPressed: _clickEvent,
+            child: new Text("获取已安装应用"),
           ),
+          ],
         ),
       );
-    }else if(isLoading == 1){
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: Center(
-          child: new Text("loading..."),
-        ),
+    } else if (isLoading == 1) {
+      return Center(
+        child: new CircularProgressIndicator(),
       );
     }
   }
+
 }
